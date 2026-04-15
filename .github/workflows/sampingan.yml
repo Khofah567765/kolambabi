@@ -1,0 +1,57 @@
+name: Samping Professional
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Warehouse (Repo Ini)
+        uses: actions/checkout@v4
+
+      - name: 🔐 Checkout Private Logic (Ambil Script)
+        uses: actions/checkout@v4
+        with:
+          repository: USERNAME_KAMU/vision-scraper-logic  # Ganti dengan nama repo private kamu
+          token: ${{ secrets.PAT_TOKEN }}
+          path: dapur_rahasia  # Script akan diletakkan di folder ini sementara
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Install Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          playwright install-deps
+
+      - name: 🚀 Run Hidden Scraper
+        env:
+          TARGET_URL: ${{ secrets.TARGET_URL }}
+          STRIP_ID: ${{ secrets.STRIP_ID }}
+        run: |
+          # Menjalankan script dari folder rahasia
+          python dapur_rahasia/samping.py
+
+      - name: 💾 Save and Push Data
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Cek jika ada file json yang baru dibuat
+          if ls *.json 1> /dev/null 2>&1; then
+            git add *.json
+            git commit -m "Update Live Data [skip ci]" || echo "No changes"
+            git push
+          else
+            echo "Gagal mengambil data."
+            exit 1
+          fi
