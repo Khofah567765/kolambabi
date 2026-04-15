@@ -39,7 +39,7 @@ jobs:
           STRIP_ID: ${{ secrets.STRIP_ID }}
         run: |
           # Menjalankan script dari folder rahasia
-          python dapur_rahasia/samping.py
+          python private_vip_1/samping.py
 
       - name: 💾 Save and Push Data
         run: |
