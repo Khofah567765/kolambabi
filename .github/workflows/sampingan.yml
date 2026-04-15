@@ -2,19 +2,19 @@ name: Samping Professional
 
 on:
   schedule:
-    - cron: '0 * * * *' # Jalan otomatis setiap jam
-  workflow_dispatch: # Bisa dijalankan manual dari tab Actions
+    - cron: '0 * * * *' 
+  workflow_dispatch: 
 
 jobs:
   scrape_and_push:
     runs-on: ubuntu-latest
     
-    # MENGGUNAKAN CONTAINER: Mematikan proses download dependency Ubuntu yang lama
+    # PERBAIKAN: Menggunakan tag jammy yang sudah pasti ada
     container:
-      image: mcr.microsoft.com/playwright/python:v1.42.0-noble
+      image: mcr.microsoft.com/playwright/python:v1.42.0-jammy
 
     steps:
-      - name: 🔐 Checkout Logic (Repo Private)
+      - name: 🔐 Checkout Logic
         uses: actions/checkout@v4
         with:
           repository: Khofah567765/kolamikan 
@@ -24,7 +24,6 @@ jobs:
       - name: 📦 Install Python Libraries
         run: |
           pip install firebase-admin playwright
-          # Tidak perlu install-deps lagi karena sudah ada di dalam container mcr
 
       - name: 🚀 Run Scraper & Push Firebase
         env:
@@ -33,5 +32,4 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
         run: |
-          # Langsung jalankan script dari folder path yang sudah ditentukan
           python private_vip_1/samping.py
