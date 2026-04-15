@@ -2,14 +2,14 @@ name: Samping Professional
 
 on:
   schedule:
-    - cron: '0 * * * *' 
+    # Mengubah dari setiap jam ('0 * * * *') menjadi setiap 5 menit
+    - cron: '*/5 * * * *' 
   workflow_dispatch: 
 
 jobs:
   scrape_and_push:
     runs-on: ubuntu-latest
     
-    # UPDATE: Menggunakan versi 1.58.0 sesuai permintaan log error
     container:
       image: mcr.microsoft.com/playwright/python:v1.58.0-jammy
 
@@ -23,7 +23,6 @@ jobs:
           
       - name: 📦 Install Python Libraries
         run: |
-          # Mengunci versi agar selalu cocok dengan container
           pip install firebase-admin playwright==1.58.0
 
       - name: 🚀 Run Scraper & Push Firebase
