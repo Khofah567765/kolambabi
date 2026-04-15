@@ -9,9 +9,9 @@ jobs:
   scrape_and_push:
     runs-on: ubuntu-latest
     
-    # PERBAIKAN: Menggunakan tag jammy yang sudah pasti ada
+    # UPDATE: Menggunakan versi 1.58.0 sesuai permintaan log error
     container:
-      image: mcr.microsoft.com/playwright/python:v1.42.0-jammy
+      image: mcr.microsoft.com/playwright/python:v1.58.0-jammy
 
     steps:
       - name: 🔐 Checkout Logic
@@ -23,7 +23,8 @@ jobs:
           
       - name: 📦 Install Python Libraries
         run: |
-          pip install firebase-admin playwright
+          # Mengunci versi agar selalu cocok dengan container
+          pip install firebase-admin playwright==1.58.0
 
       - name: 🚀 Run Scraper & Push Firebase
         env:
