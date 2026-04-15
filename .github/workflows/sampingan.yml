@@ -18,10 +18,10 @@ jobs:
       - name: 🔐 Checkout Private Logic (Ambil Script)
         uses: actions/checkout@v4
         with:
-          repository: USERNAME_KAMU/vision-scraper-logic  # Ganti dengan nama repo private kamu
+          repository: Khofah567765/kolamikan 
           token: ${{ secrets.PAT_TOKEN }}
-          path: dapur_rahasia  # Script akan diletakkan di folder ini sementara
-
+          path: private_vip_1
+          
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
