@@ -14,31 +14,43 @@ jobs:
       contents: write
 
     steps:
-    - name: Kéo mã nguồn về máy chủ
+    # 1. Tarik repository saat ini (kolambabi) untuk workspace dan folder logos/
+    - name: Checkout Repo Kolambabi
       uses: actions/checkout@v4
       with:
         ref: main
         fetch-depth: 0
 
+    # 2. Tarik repository PRIVATE (kolamikan) langsung ke folder private_vip_1
+    - name: Checkout Repo Private Kolamikan
+      uses: actions/checkout@v4
+      with:
+        repository: Khofah567765/kolamikan
+        token: ${{ secrets.PAT_TOKEN}}
+        path: private_vip_1
+
+    # 3. Setup Python
     - name: Cài đặt Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
+    # 4. Install Dependensi
     - name: Cài đặt thư viện Python & Chromium
       run: |
         python -m pip install --upgrade pip
         pip install playwright requests Pillow firebase-admin
         playwright install --with-deps chromium
 
+    # 5. Jalankan script sesuai path Anda
     - name: 🚀 Run Scraper & Push Firebase
       env:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
       run: |
-        # Pastikan path ini persis dengan letak file di repository
         python -u private_vip_1/samping.py
 
+    # 6. Push banner logos ke GitHub kolambabi
     - name: 🖼️ Push Banner Logos ke GitHub
       run: |
         git config --global user.name "github-actions[bot]"
