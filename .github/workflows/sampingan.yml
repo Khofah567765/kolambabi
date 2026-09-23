@@ -4,7 +4,7 @@ on:
   schedule:
     # Berjalan otomatis setiap 5 menit
     - cron: '*/5 * * * *'
-  workflow_dispatch: # Tombol pemicu manual
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -31,11 +31,17 @@ jobs:
         pip install playwright requests Pillow firebase-admin
         playwright install --with-deps chromium
 
-    - name: 🚀 Kích hoạt Bot đi săn link & Push Firebase
+    - name: 🚀 Run Scraper & Push Firebase
       env:
-        TARGET_URL: ${{ secrets.TARGET_URL }}
-        STRIP_ID: ${{ secrets.STRIP_ID }}
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-      # Sesuaikan nama/path file skrip kamu (misal: noppal.py atau private_vip_1/samping.py)
       run: private_vip_1/samping.py
+
+    - name: 🖼️ Push Banner Logos ke GitHub
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        # Hanya memasukkan folder logos/ ke dalam commit git
+        git add logos/
+        # Commit dan push hanya jika ada logo baru yang dibuat
+        git diff --staged --quiet || (git commit -m "Auto-update match banners [skip ci]" && git pull --rebase origin main && git push origin main)
