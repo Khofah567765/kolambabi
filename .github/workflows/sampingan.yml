@@ -35,13 +35,13 @@ jobs:
       env:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-      run: private_vip_1/samping.py
+      run: |
+        # Pastikan path ini persis dengan letak file di repository
+        python -u private_vip_1/samping.py
 
     - name: 🖼️ Push Banner Logos ke GitHub
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        # Hanya memasukkan folder logos/ ke dalam commit git
         git add logos/
-        # Commit dan push hanya jika ada logo baru yang dibuat
         git diff --staged --quiet || (git commit -m "Auto-update match banners [skip ci]" && git pull --rebase origin main && git push origin main)
