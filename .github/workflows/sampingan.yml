@@ -1,35 +1,41 @@
-name: Samping Professional
+name: Tự Động Săn Link Bóng Đá Hằng Ngày
 
 on:
   schedule:
-    # Mengubah dari setiap jam ('0 * * * *') menjadi setiap 5 menit
-    - cron: '*/10 * * * *' 
-  workflow_dispatch: 
+    # Berjalan otomatis setiap 5 menit
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Tombol pemicu manual
 
 jobs:
-  scrape_and_push:
+  run-bot:
     runs-on: ubuntu-latest
-    
-    container:
-      image: mcr.microsoft.com/playwright/python:v1.58.0-jammy
+
+    permissions:
+      contents: write
 
     steps:
-      - name: 🔐 Checkout Logic
-        uses: actions/checkout@v4
-        with:
-          repository: Khofah567765/kolamikan 
-          token: ${{ secrets.PAT_TOKEN }}
-          path: private_vip_1
-          
-      - name: 📦 Install Python Libraries
-        run: |
-          pip install firebase-admin playwright==1.58.0
+    - name: Kéo mã nguồn về máy chủ
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        fetch-depth: 0
 
-      - name: 🚀 Run Scraper & Push Firebase
-        env:
-          TARGET_URL: ${{ secrets.TARGET_URL }}
-          STRIP_ID: ${{ secrets.STRIP_ID }}
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-        run: |
-          python private_vip_1/samping.py
+    - name: Cài đặt Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Cài đặt thư viện Python & Chromium
+      run: |
+        python -m pip install --upgrade pip
+        pip install playwright requests Pillow firebase-admin
+        playwright install --with-deps chromium
+
+    - name: 🚀 Kích hoạt Bot đi săn link & Push Firebase
+      env:
+        TARGET_URL: ${{ secrets.TARGET_URL }}
+        STRIP_ID: ${{ secrets.STRIP_ID }}
+        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+      # Sesuaikan nama/path file skrip kamu (misal: noppal.py atau private_vip_1/samping.py)
+      run: private_vip_1/samping.py
