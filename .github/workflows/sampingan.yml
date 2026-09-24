@@ -3,7 +3,7 @@ name: Tự Động Săn Link Bóng Đá Hằng Ngày
 on:
   schedule:
     # Berjalan otomatis setiap 5 menit
-    - cron: '*/5 * * * *'
+    - cron: '*/4 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -47,6 +47,8 @@ jobs:
       env:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+        FIREBASE_SERVICE_ACCOUNT_2: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_2 }}
+        FIREBASE_DATABASE_URL_2: ${{ secrets.FIREBASE_DATABASE_URL_2 }}
       run: |
         python -u private_vip_1/samping.py
 
